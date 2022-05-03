@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 
 # UI파일 연결
 # UI파일 위치를 잘 적어 넣어준다.
-form_class = uic.loadUiType("myqt01.ui")[0]
+form_class = uic.loadUiType("myqt07.ui")[0]
 
 # 프로그램 메인을 담당하는 Class 선언
 class MainClass(QMainWindow, form_class):
@@ -16,9 +16,20 @@ class MainClass(QMainWindow, form_class):
         self.pb.clicked.connect(self.myclick)    # 클릭 시 실행할 function
         self.show()
         
-
+    def printStar(self):
+        first = int(self.le_first.text())
+        last = int(self.le_last.text())
+        
+        str = ""
+        for i in range(first, last + 1):
+            for j in range(i):
+                str += "*"
+            str += "\n"
+        
+        self.te.setText(str)
+    
     def myclick(self):
-        self.lbl.setText("Good evening")
+        self.printStar()
         
 if __name__ == "__main__" :
     app = QApplication(sys.argv) 
