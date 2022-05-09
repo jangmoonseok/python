@@ -2,12 +2,11 @@ import pymysql
 
 conn = pymysql.connect(host="127.0.0.1", user="root", password="python", port=3305, database="python", charset="utf8")
 
-cur = conn.cursor()
+cur = conn.cursor(pymysql.cursors.DictCursor)
 cur.execute("select * from emp")
 rows = cur.fetchall()
 
-for i in rows:
-    print(i[0], i[1], i[2], i[3])
+print(rows)
 
 
 cur.close()
