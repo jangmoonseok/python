@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>리스트</title>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+function myinit(){
+	
+	axios({
+	  method: 'get',
+	  url: 'ajaxList',
+	})
+  	.then(function (response) {
+  		
+		console.log(response.data.emps)
+		arr = response.data.emps
+
+		str = ""
+		for(var i = 0; i < arr.length; i++){
+			str += `
+				<tr>
+					<td>${arr[i].e_id}</td>
+					<td>${arr[i].e_name}</td>
+					<td>${arr[i].sex}</td>
+					<td>${arr[i].addr}</td>
+				</tr>
+			`
+		}
+
+		tbody = document.querySelector('.tbody');
+		tbody.innerHTML = str
+	});
+}	
+
+</script>
+</head>
+<body onload="myinit()">
+	<h1>목록</h1>
+	<br>
+	<hr>
+	<table border="1" class="table">
+		<thead>		
+			<tr>
+				<th>아이디</th>
+				<th>이름</th>
+				<th>성별</th>
+				<th>주소</th>
+			</tr>
+		</thead>
+		<tbody class="tbody">
+		</tbody>
+	</table>
+</body>
+</html>

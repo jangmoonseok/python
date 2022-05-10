@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script>
+	function fn_del(e_id){
+		flag = confirm("삭제하시겠습니까?");
+		if(!flag){
+			return;
+		}
+		location.href = '/list/delete?eid=' + e_id;
+	}
+
+</script>
+</head>
+<body>
+	<h1>목록</h1>
+	<br>
+	<button type="button" onclick="location.href = '/list/add'">추가</button>
+	<hr>
+	<table border="1">
+		<tr>
+			<th>아이디</th>
+			<th>이름</th>
+			<th>성별</th>
+			<th>주소</th>
+		</tr>
+		{% for i in rows %}
+		<tr>
+			<td>{{i.e_id}}</td>
+			<td>{{i.e_name}}</td>
+			<td>{{i.sex}}</td>
+			<td>{{i.addr}}</td>
+			<td>
+				<button type="button" onclick="location.href = '/list/update?eid={{i.e_id}}'">수정</button>
+			</td>
+			<td>
+				<button type="button" onclick="fn_del('{{i.e_id}}')">삭제</button>
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+</body>
+</html>

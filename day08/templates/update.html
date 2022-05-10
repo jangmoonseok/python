@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>수정</h1>
+	<br>
+	<form action="http://127.0.0.1:5000/list/update?eid={{data.e_id}}" method="post">	
+		<button type="submit">수정</button>
+		<button type="button" onclick="location.href = '/list'">목록</button>
+		<hr>
+		<table border="1">
+			<tr>
+				<th>아이디</th>
+				<td>
+					<input type="text" name="eid" value={{data.e_id}} disabled>
+				</td>
+			</tr>
+			<tr>
+				<th>이름</th>
+				<td>
+					<input type="text" name="ename" value={{data.e_name}}>
+				</td>
+			</tr>
+			<tr>
+				<th>성별</th>
+				<td>
+					<input type="text" name="sex" value={{data.sex}}>
+				</td>
+			</tr>
+			<tr>
+				<th>주소</th>
+				<td>
+					<input type="text" name="addr" value={{data.addr}}>
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>
