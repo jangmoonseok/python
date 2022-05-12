@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>리스트</title>
+<script type="text/javascript" src="/js/axios.min.js"></script>
+<style type="text/css">
+	button{
+		display:inline-block;
+		width: 100px;
+	}
+	th,td{
+		width: 150px;
+		text-align:center;
+	}
+</style>
+<script type="text/javascript">
+function updateEmp(id){
+	axios({
+		method:'get',
+		url:'ajaxDetail?e_id=' + id
+	}).then((res) => {
+		e_id = res.data.emp.e_id
+		e_name = res.data.emp.e_name
+		sex = res.data.emp.sex
+		addr = res.data.emp.addr
+
+		document.querySelector('#e_id').value = e_id
+		document.querySelector('#e_name').value = e_name
+		document.querySelector('#sex').value = sex
+		document.querySelector('#addr').value = addr
+	 });
+}
+
+function myinit(){
+	fn_list();
+}	
+
+function fn_list(){
+	axios({
+		  method: 'get',
+		  url: 'ajaxList',
+		}).then(function (response) {  		
+			arr = response.data.emps
+
+			str = ""
+			for(var i = 0; i < arr.length; i++){
+				str += `
+						<tr>
+							<td>
+								<a href="javascript:updateEmp('${arr[i].e_id}')">${arr[i].e_id}</a>
+							</td>
+							<td>${arr[i].e_name}</td>
+							<td>${arr[i].sex}</td>
+							<td>${arr[i].addr}</td>
+						</tr>
+				`
+			}
+
+			tbody = document.querySelector('#tbody1');
+			tbody.innerHTML = str
+		});
+}
+
+function fn_add(){
+	e_id = document.querySelector("#e_id").value
+	e_name = document.querySelector("#e_name").value
+	sex = document.querySelector("#sex").value
+	addr = document.querySelector("#addr").value
+	axios({
+		method:'post',
+		url:'ajaxAdd',
+		data:{
+			"e_id" : e_id,
+			"e_name" : e_name,
+			"sex" : sex,
+			"addr" : addr
+		}
+	}).then((res) => {
+		cnt = res.data.cnt
+		
+		if(cnt > 0){
+			alert("추가 성공")
+			fn_list()
+			fn_clean()
+		}else{
+			alert("추가 실패")
+		}
+	})
+}
+
+function fn_delete(){
+	flag = confirm("정말 삭제하시겠습니까?")
+	if(!flag){
+		return;
+	}
+	e_id = document.querySelector("#e_id").value
+	
+	axios({
+		method:'get',
+		url:'ajaxDelete?e_id=' + e_id
+	}).then((res) => {
+		cnt = res.data.cnt
+		
+		if(cnt > 0){
+			alert("삭제 성공")
+			fn_list()
+			fn_clean()
+		}else{
+			alert("삭제 실패")
+		}
+	})
+}
+
+function fn_update(){
+	e_id = document.querySelector("#e_id").value
+	e_name = document.querySelector("#e_name").value
+	sex = document.querySelector("#sex").value
+	addr = document.querySelector("#addr").value
+	
+	axios({
+		method:'post',
+		url:'ajaxUpdate',
+		data:{
+			"e_id" : e_id,
+			"e_name" : e_name,
+			"sex" : sex,
+			"addr" : addr
+		}
+	}).then((res) => {
+		cnt = res.data.cnt
+		
+		if(cnt > 0){
+			alert("수정 성공")
+			fn_list()
+			fn_clean()
+		}else{
+			alert("수정 실패")
+		}
+	})
+}
+
+function fn_clean(){
+	document.querySelector("#e_id").value = ""
+	document.querySelector("#e_name").value = ""
+	document.querySelector("#sex").value = ""
+	document.querySelector("#addr").value = ""
+}
+</script>
+</head>
+<body onload="myinit()">
+	<h1>목록</h1>
+	<br>
+	<hr>
+	<table border="1" class="table">
+		<thead>		
+			<tr>
+				<th>아이디</th>
+				<th>이름</th>
+				<th>성별</th>
+				<th>주소</th>
+			</tr>
+		</thead>
+		<tbody id="tbody1">
+		</tbody>
+	</table>
+	<hr>
+	<table border="1" id="table2">
+		<tbody id="tbody2">
+			<tr>
+				<th>
+					아이디
+				</th>
+				<td>
+					<input type="text" name="e_id" id="e_id">
+				</td>
+			</tr>
+				<td>
+			<tr>
+				<th>
+					이름
+				</th>
+				<td>
+					<input type="text" name="e_name" id="e_name">
+				</td>
+			</tr>
+				<td>
+			<tr>
+				<th>
+					성별
+				</th>
+				<td>
+					<input type="text" name="sex" id="sex">
+				</td>
+			</tr>
+				<td>
+			<tr>
+				<th>
+					주소
+				</th>
+				<td>
+					<input type="text" name="addr" id="addr">
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<button type="button" onclick="fn_add()">추가</button>
+					<button type="button" onclick="fn_update()">수정</button>
+					<button type="button" onclick="fn_delete()">삭제</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
