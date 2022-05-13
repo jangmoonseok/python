@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>숫자야구</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script type="text/javascript">
+	var arr3 = [];
+	var com3 = [];
+	var result = ""
+	var sock = io.connect();
+	
+	function init(){
+		
+		sock.on('connect', function(){
+			console.log("연결되었습니다.")
+		});
+		
+		setCom3();
+	}	
+	
+	function setArr3(){
+		myinput = $('#myinput').val();
+		if(myinput.length != 3){
+			$('#myinput').val('');
+			return;
+		}
+		
+		for(i = 0; i < myinput.length; i++){
+			arr3.push(parseInt(myinput[i]))
+		}
+		
+		
+	}
+	
+	function setCom3(){
+		arr9 = [1,2,3,4,5,6,7,8,9]
+		for(i = 0; i < 100; i++){
+			rnd = parseInt(Math.random() * 9)
+			temp = arr9[0]
+			arr9[0] = arr9[rnd]
+			arr9[rnd] = temp
+		}			
+		
+		for(i = 0; i < 3; i++){
+			com3.push(arr9[i])
+		}
+		console.log(com3)
+	}
+	
+	function startGame(){
+		setArr3()
+		
+		var strike = 0;
+		var ball = 0;
+		
+		for(i = 0; i < com3.length; i++){
+			for(j = 0; j < arr3.length; j++){
+				if(com3[i] == arr3[j] && i == j){
+					strike++
+				}else if(com3[i] == arr3[j] && i != j){
+					ball++
+				}else{
+					continue
+				}
+			}
+		}
+		arr3 = []
+		
+		str = $('#myinput').val() + " => " + strike + "S  " + ball + "B"
+			
+		sock.send(str);
+
+		sock.on('message', function(msg){
+			$('#ta').append(msg.message + "\n")
+		});
+		
+		
+		
+		$('#myinput').val('');
+		
+		if(strike == 3){
+			alert("축하합니다! 정답입니다!")
+		}
+	}
+	
+	function mykey(e){
+		if(e.key == "Enter"){
+			startGame()
+		}
+	}
+</script>
+</head>
+<body onload="init()">
+<table border="1" style="margin:200px auto;">
+	<tr>
+		<td>야구존</td>
+		<td>
+			<input type="text" id="myinput" onkeydown="mykey(event)"/>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<button type="button" style="width:100%;" onclick="startGame()">보내기</button>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<textarea rows="5" cols="10" id="ta" style="width:98%;"></textarea>
+		</td>
+	</tr>
+	
+</table>
+</body>
+</html>

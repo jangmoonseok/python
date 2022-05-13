@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chat Room</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+</head>
+<body>
+<script type="text/javascript">
+$(document).ready(function(){
+	var sock = io.connect();
+	
+	sock.on('connect', function(){
+		sock.send("연결되었습니다.")
+	});
+
+	sock.on('message', function(msg){
+		// console.log(type(msg));
+		$('#messages').append('>> '+msg.message+'<br>');
+		console.log('Received Message : '+msg.type);
+	});
+
+
+
+	$('#sendbutton').on('click', function(){
+		sock.send($('#myMessage').val());
+		$('#myMessage').val('');
+	});
+});
+
+
+</script>
+<ul id="messages"></ul>
+<input type="text" id="myMessage">
+<button id="sendbutton">Send</button>
+
+</body>
+</html>
