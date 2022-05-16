@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>숫자야구</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script type="text/javascript">
+var sock;
+var user_names = [];
+var flag_ing = false;
+
+function init(){	
+	sock = io.connect();
+	
+	sock.on('connect', function(){
+		console.log("연결되었습니다.")
+	});
+	
+	sock.on('message', function(res){
+		var infos = res.message.split(',')
+		var command = infos[0]
+		if(command == "login") rsv_ready(infos[1])
+		if(command == "check") rsv_check(infos[1], infos[2])
+		if(command == "info") rsv_info(infos[1], infos[2])
+		if(command == "start") rsv_start()
+		if(command == "over") rsv_over(infos[1], infos[2])
+	});
+}
+
+function rsv_start(){
+	flag_ing = true;
+}
+
+function rsv_over(user_name, value){
+	flag_ing = false;	
+	alert(user_name + "님이 승리했습니다.\n" + "입력값 : " + value);
+}
+
+function rsv_ready(user_name){
+	var flag_exist = false;
+	for(var i = 0; i < user_names.length; i++){
+		if(user_name == user_names[i]) {
+			flag_exist = true;
+			break;
+		}
+	}
+	
+	if(!flag_exist){		
+		user_names.push(user_name)
+	}
+	
+	
+	for(var i = 0; i < user_names.length; i++){
+		$('.client').eq(i).text(user_names[i])
+		
+	}
+	
+}
+
+function rsv_check(myinput, result){
+	str_old = $('#ta').val()
+	str_new = myinput + " => " + result + "\n";
+	
+	str = str_new + str_old
+	$('#ta').text(str)
+	sock.send("info," + $('#user').val() + "," + myinput + " => " + result)
+	
+	if(result == "3S 0B"){		
+		sock.send("over," + $('#user').val() + "," + myinput)
+	}
+}
+
+function rsv_info(user_name, result){
+	var index = -1;
+	for(var i = 0; i < user_names.length; i++){
+		if(user_name == user_names[i]){
+			index = i;
+			break;
+		}
+	}
+	
+	str_old = $('.game_disp').eq(index).val()
+	str_new = result + "\n"
+	
+	$('.game_disp').eq(index).val(str_new + str_old)
+}
+
+function fn_ready(){
+	var user_name = $('#user').val()
+	sock.send("login," + user_name);
+}
+
+
+function fn_start(){
+	sock.send("start,")
+}
+
+function startGame(){
+	if(!flag_ing){
+		return;
+	}
+	
+	myinput = $('#myinput').val();
+	if(myinput.length != 3){
+		$('#myinput').val('');
+		return;
+	}
+	
+	sock.send("check," + myinput)
+	$('#myinput').val("")
+}
+
+function mykey(e){
+	if(e.key == "Enter"){
+		startGame()
+	}
+}
+</script>
+<style type="text/css">
+	#user{
+		width: 50px;
+	}
+	
+	#ready{
+		width: 40%;	
+	}
+	
+	#start{
+		width: 40%;		
+	}
+	#mytable{
+		vertical-align: top;
+	}
+</style>
+
+
+</head>
+<body onload="init()">
+<table>
+	<tr>
+		<td id="mytable">
+			<table border="1">
+				<tr>
+					<td>
+						<input type="text" id="user" class="user" />
+					</td>
+					<td>
+						<input type="button" id="ready" value="준비" onclick="fn_ready()"/>
+						<input type="button" id="start" value="시작" onclick="fn_start()"/>
+					</td>
+				</tr>
+				<tr>
+					<td>야구존</td>
+					<td>
+						<input type="text" id="myinput" onkeydown="mykey(event)"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<button type="button" style="width:100%;" onclick="startGame()">보내기</button>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<textarea rows="5" cols="10" id="ta" style="width:98%;"></textarea>
+					</td>
+				</tr>
+				
+			</table>		
+		</td>
+		<td>
+			<table border="1" id="playerTable">
+				<tr>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+				</tr>
+				<tr>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+				</tr>
+				<tr>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+				</tr>
+					<tr>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+				</tr>
+				<tr>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+				</tr>
+					<tr>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+				</tr>
+				<tr>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+				</tr>
+					<tr>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+				</tr>
+				<tr>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+					<td class="client"></td>
+				</tr>
+					<tr>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+					<td><textarea rows="6" cols="14" class="game_disp" ></textarea></td>
+				</tr>
+			</table>
+			
+		</td>
+	</tr>
+</table>
+
+</body>
+</html>

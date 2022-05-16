@@ -9,13 +9,13 @@
 	var arr3 = [];
 	var com3 = [];
 	var result = ""
-	var sock = io.connect();
+	/* var sock = io.connect(); */
 	
 	function init(){
 		
-		sock.on('connect', function(){
+		/* sock.on('connect', function(){
 			console.log("연결되었습니다.")
-		});
+		}); */
 		
 		setCom3();
 	}	
@@ -68,16 +68,16 @@
 		}
 		arr3 = []
 		
-		str = $('#myinput').val() + " => " + strike + "S  " + ball + "B"
+		str = $('#myinput').val() + " => " + strike + "S  " + ball + "B\n"
 			
-		sock.send(str);
+		/* sock.send(str);
 
 		sock.on('message', function(msg){
 			$('#ta').append(msg.message + "\n")
 		});
+		 */
 		
-		
-		
+		$('#ta').append(str)
 		$('#myinput').val('');
 		
 		if(strike == 3){
