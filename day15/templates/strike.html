@@ -9,8 +9,21 @@
 var sock;
 var user_names = [];
 var flag_ing = false;
+<<<<<<< HEAD
+var cnt = 0;
+	
+function init(){	
+	var host = location.hostname;
+	var ip = "{{ip}}";
+	
+	if(host != ip){
+		$('#start').hide();
+	}
+	
+=======
 
 function init(){	
+>>>>>>> 4be7cedfa0770ccbd16c700956519e16e1e06a51
 	sock = io.connect();
 	
 	sock.on('connect', function(){
@@ -25,6 +38,10 @@ function init(){
 		if(command == "info") rsv_info(infos[1], infos[2])
 		if(command == "start") rsv_start()
 		if(command == "over") rsv_over(infos[1], infos[2])
+<<<<<<< HEAD
+		if(command == "dead") rsv_dead(infos[1])
+=======
+>>>>>>> 4be7cedfa0770ccbd16c700956519e16e1e06a51
 	});
 }
 
@@ -32,6 +49,18 @@ function rsv_start(){
 	flag_ing = true;
 }
 
+<<<<<<< HEAD
+function rsv_dead(user_name){
+	for(var i = 0; i < user_names.length; i++){
+		if(user_names[i] == user_name){
+			$('.client').eq(i).css("background","red")
+			break;
+		}
+	}
+}
+
+=======
+>>>>>>> 4be7cedfa0770ccbd16c700956519e16e1e06a51
 function rsv_over(user_name, value){
 	flag_ing = false;	
 	alert(user_name + "님이 승리했습니다.\n" + "입력값 : " + value);
@@ -88,7 +117,15 @@ function rsv_info(user_name, result){
 
 function fn_ready(){
 	var user_name = $('#user').val()
+<<<<<<< HEAD
+	const korean = /^[가-힣]*$/g;
+ 	
+	if(korean.test(user_name) && user_name.length >= 3){		
+		sock.send("login," + user_name);
+	}
+=======
 	sock.send("login," + user_name);
+>>>>>>> 4be7cedfa0770ccbd16c700956519e16e1e06a51
 }
 
 
@@ -101,14 +138,31 @@ function startGame(){
 		return;
 	}
 	
+<<<<<<< HEAD
+	var user_name = $('#user').val()
+=======
+>>>>>>> 4be7cedfa0770ccbd16c700956519e16e1e06a51
 	myinput = $('#myinput').val();
 	if(myinput.length != 3){
 		$('#myinput').val('');
 		return;
 	}
 	
+<<<<<<< HEAD
+	cnt++
 	sock.send("check," + myinput)
 	$('#myinput').val("")
+	
+	if(cnt >=5 ){
+		$('#myinput').attr("disabled","disabled")
+		$('#myinput').css("background","red")
+		sock.send("dead,"+ user_name)
+		return;
+	}
+=======
+	sock.send("check," + myinput)
+	$('#myinput').val("")
+>>>>>>> 4be7cedfa0770ccbd16c700956519e16e1e06a51
 }
 
 function mykey(e){

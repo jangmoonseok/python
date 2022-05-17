@@ -1,7 +1,15 @@
+<<<<<<< HEAD
+from flask import Flask, jsonify, render_template,request
+from subprocess import call
+from flask_socketio import SocketIO, send
+from random import random
+import flask
+=======
 from flask import Flask, jsonify, render_template
 from subprocess import call
 from flask_socketio import SocketIO, send
 from random import random
+>>>>>>> 4be7cedfa0770ccbd16c700956519e16e1e06a51
 
 app = Flask(__name__)
 app.secret_key = "mysecret"
@@ -26,7 +34,12 @@ socket_io = SocketIO(app)
 
 @app.route('/')
 def strike():
+<<<<<<< HEAD
+    ip = flask.request.remote_addr
+    return render_template('strike.html',ip=ip)
+=======
     return render_template('strike.html')
+>>>>>>> 4be7cedfa0770ccbd16c700956519e16e1e06a51
 
 
 
